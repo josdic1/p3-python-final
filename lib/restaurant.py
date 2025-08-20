@@ -6,11 +6,11 @@ class Restaurant:
 
     all = []
 
-    def __init__(self, name, group_id, location, id = None):
+    def __init__(self, name, location, group_id, id = None):
         self.id = id
         self.name = name
-        self.group_id = group_id
         self.location = location
+        self.group_id = group_id
 
     @property
     def name(self):
@@ -21,18 +21,7 @@ class Restaurant:
         if isinstance (value, str) and value.strip():
             self._name = value
         else:
-            raise ValueError("Name cannot be empty or a duplicate")
-        
-    @property
-    def group_id(self):
-        return self._group_id
-    
-    @group_id.setter
-    def group_id(self, value):
-        if isinstance (value, int) and value > 0:
-            self._group_id = value
-        else:
-            raise ValueError("group_id cannot be empty or a duplicate")
+            raise ValueError("Name cannot be empty")
         
     @property
     def location(self):
@@ -43,11 +32,23 @@ class Restaurant:
         if isinstance (value, str) and value.strip():
             self._location = value
         else:
-            raise ValueError("location cannot be empty or a duplicate")
+            raise ValueError("No location added")
+
+        
+    @property
+    def group_id(self):
+        return self._group_id
+    
+    @group_id.setter
+    def group_id(self, value):
+        if isinstance (value, int) and value > 0:
+            self._group_id = value
+        else:
+            raise ValueError("group_id must be a number")
         
     @classmethod
     def _from_db_row(cls, row):
-        restaurant = cls(row[1])
+        restaurant = cls(row[1], row[2], row[3])
         restaurant.id = (row[0])
         return restaurant
     
@@ -70,11 +71,11 @@ class Restaurant:
         return cls._from_db_row(row) if row else None
     
     @classmethod
-    def create(cls, name):
+    def create(cls, name, location, group_id):
         existing = cls.find_by_name(name)
         if existing:
             return existing
-        restaurant = cls(name)
+        restaurant = cls(name, location, group_id)
         restaurant.save()
         return restaurant
     
@@ -84,7 +85,7 @@ class Restaurant:
         return related_group
     
     def update(self):
-        CURSOR.execute("UPDATE restaurants SET name = ? WHERE id = ?", (self._name,self.id,))
+        CURSOR.execute("UPDATE restaurants SET name = ?, location = ?, group_id = ? WHERE id = ?", (self._name, self._location, self._group_id, self.id,))
         CONN.commit()
 
     def delete(self):
@@ -92,8 +93,8 @@ class Restaurant:
         CONN.commit()
 
     def save(self):
-        CURSOR.execute("INSERT INTO restaurants (name) VALUES (?)", (self._name,))
-        self.id = self.id
+        CURSOR.execute("INSERT INTO restaurants (name, location, group_id) VALUES (?,?,?)", (self.name, self.location, self.group_id))
+        self.id = CURSOR.lastrowid
         CONN.commit()
 
 

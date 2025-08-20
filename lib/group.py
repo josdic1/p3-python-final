@@ -58,6 +58,8 @@ class Group:
         new_restaurant = Restaurant.find_by_name(name)
 
         if new_restaurant:
+            new_restaurant._name = self._name
+            new_restaurant._location = self._location
             new_restaurant._group_id = self.id
             new_restaurant.update()
             print(f"Updated {new_restaurant.name}'s group to {self.name}.")
@@ -67,7 +69,7 @@ class Group:
             return new_restaurant
 
     def update(self):
-        CURSOR.execute("UPDATE group SET name = ? WHERE id = ?", (self._name,self.id,))
+        CURSOR.execute("UPDATE groups SET name = ? WHERE id = ?", (self._name,self.id,))
         CONN.commit()
 
     def delete(self):
@@ -76,7 +78,7 @@ class Group:
 
     def save(self):
         CURSOR.execute("INSERT INTO groups (name) VALUES (?)", (self._name,))
-        self.id = self.id
+        self.id = CURSOR.lastrowid
         CONN.commit()
 
 

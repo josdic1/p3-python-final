@@ -13,15 +13,14 @@ CREATE TABLE IF NOT EXISTS groups (
 CREATE TABLE IF NOT EXISTS restaurants (
     id INTEGER PRIMARY KEY,
     name TEXT UNIQUE NOT NULL,
-    location TEXT NULL,
+    location TEXT,
     group_id INTEGER,
-    FOREIGN KEY (group_id) REFERENCES groups.id
+    FOREIGN KEY (group_id) REFERENCES groups(id)
 );
 
 """
 
 CURSOR.executescript(SCHEMA)
 CONN.commit()
-CONN.close()
 
 print("✅ Tables created from schema.")
