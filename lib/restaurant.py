@@ -1,6 +1,6 @@
 import sqlite3
-from .db import CONN, CURSOR
-from .group import Group
+from lib.db import CONN, CURSOR
+from lib.group import Group
 
 class Restaurant:
 
