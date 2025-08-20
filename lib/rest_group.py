@@ -4,8 +4,6 @@ from lib.db import CONN, CURSOR
 
 class RestGroup:
 
-    all = []
-
     def __init__(self, name, id = None):
         self.id = id
         self.name = name
@@ -23,25 +21,25 @@ class RestGroup:
         
     @classmethod
     def _from_db_row(cls, row):
-        group = cls(row[1])
-        group.id = (row[0])
-        return group
+        rest_group = cls(row[1])
+        rest_group.id = (row[0])
+        return rest_group
     
     @classmethod
     def get_all(cls):
-        CURSOR.execute("SELECT * FROM groups")
+        CURSOR.execute("SELECT * FROM rest_groups")
         rows = CURSOR.fetchall()
         return [cls._from_db_row(row) for row in rows] if rows else []
     
     @classmethod
     def find_by_id(cls, id):
-        CURSOR.execute("SELECT * FROM groups WHERE id = ?", (id,))
+        CURSOR.execute("SELECT * FROM rest_groups WHERE id = ?", (id,))
         row = CURSOR.fetchone()
         return cls._from_db_row(row) if row else None
 
     @classmethod
     def find_by_name(cls, name):
-        CURSOR.execute("SELECT * FROM groups WHERE name = ?", (name,))
+        CURSOR.execute("SELECT * FROM rest_groups WHERE name = ?", (name,))
         row = CURSOR.fetchone()
         return cls._from_db_row(row) if row else None
     
@@ -50,16 +48,23 @@ class RestGroup:
         existing = cls.find_by_name(name)
         if existing:
             return existing
-        group = cls(name)
-        group.save()
-        return group
+        rest_group = cls(name)
+        rest_group.save()
+        return rest_group
+    
+    def find_restaurants_by_rest_group(self):
+        from lib.restaurant import Restaurant
+        CURSOR.execute("SELECT * FROM restaurants WHERE rest_group_id = ?", (self.id,))
+        rows = CURSOR.fetchall()
+        return [Restaurant._from_db_row(row) for row in rows] if rows else []
+
     
     def add_restaurant(self, name, location):
         from lib.restaurant import Restaurant
         new_restaurant = Restaurant.find_exact_by_name(name, location, self.id)
 
         if new_restaurant:
-            new_restaurant.group_id = self.id
+            new_restaurant.rest_group_id = self.id
             new_restaurant.update()
             return new_restaurant
         else:
@@ -67,15 +72,15 @@ class RestGroup:
             return new_restaurant
 
     def update(self):
-        CURSOR.execute("UPDATE groups SET name = ? WHERE id = ?", (self._name,self.id,))
+        CURSOR.execute("UPDATE rest_groups SET name = ? WHERE id = ?", (self._name,self.id,))
         CONN.commit()
 
     def delete(self):
-        CURSOR.execute("DELETE FROM groups WHERE id = ?", (self.id,))
+        CURSOR.execute("DELETE FROM rest_groups WHERE id = ?", (self.id,))
         CONN.commit()
 
     def save(self):
-        CURSOR.execute("INSERT INTO groups (name) VALUES (?)", (self._name,))
+        CURSOR.execute("INSERT INTO rest_groups (name) VALUES (?)", (self._name,))
         self.id = CURSOR.lastrowid
         CONN.commit()
 

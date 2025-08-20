@@ -3,7 +3,6 @@ from lib.db import CONN, CURSOR
 
 class Restaurant:
 
-    all = []
 
     def __init__(self, name, location, rest_group_id, id = None):
         self.id = id
