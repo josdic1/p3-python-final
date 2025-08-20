@@ -5,11 +5,11 @@ class Restaurant:
 
     all = []
 
-    def __init__(self, name, location, group_id, id = None):
+    def __init__(self, name, location, rest_group_id, id = None):
         self.id = id
         self.name = name
         self.location = location
-        self.group_id = group_id
+        self.rest_group_id = rest_group_id
 
     @property
     def name(self):
@@ -35,15 +35,15 @@ class Restaurant:
 
         
     @property
-    def group_id(self):
-        return self._group_id
+    def rest_group_id(self):
+        return self._rest_group_id
     
-    @group_id.setter
-    def group_id(self, value):
+    @rest_group_id.setter
+    def rest_group_id(self, value):
         if isinstance (value, int) and value > 0:
-            self._group_id = value
+            self._rest_group_id = value
         else:
-            raise ValueError("group_id must be a number")
+            raise ValueError("rest_group_id must be a number")
         
     @classmethod
     def _from_db_row(cls, row):
@@ -70,37 +70,37 @@ class Restaurant:
         return cls._from_db_row(row) if row else None
 
     @classmethod
-    def find_exact_by_name(cls, name, location, group_id):
+    def find_exact_by_name(cls, name, location, rest_group_id):
         if location is None:
-            CURSOR.execute("SELECT * FROM restaurants WHERE name = ? AND location IS NULL AND group_id = ?", (name, group_id))
+            CURSOR.execute("SELECT * FROM restaurants WHERE name = ? AND location IS NULL AND rest_group_id = ?", (name, rest_group_id,))
         else:
-            CURSOR.execute("SELECT * FROM restaurants WHERE name = ? AND location = ? AND group_id = ?", (name, location, group_id))
+            CURSOR.execute("SELECT * FROM restaurants WHERE name = ? AND location = ? AND rest_group_id = ?", (name, location, rest_group_id,))
         row = CURSOR.fetchone()
         return cls._from_db_row(row) if row else None
 
     @classmethod
-    def input_name_output_id(cls, name, location, group_id):
-        r = cls.find_exact_by_name(name, location, group_id)
+    def input_name_output_id(cls, name, location, rest_group_id):
+        r = cls.find_exact_by_name(name, location, rest_group_id)
         return r.id if r else None
         
     
     @classmethod
-    def create(cls, name, location, group_id):
-        existing = cls.find_exact_by_name(name, location, group_id)
+    def create(cls, name, location, rest_group_id):
+        existing = cls.find_exact_by_name(name, location, rest_group_id)
         if existing:
             return existing
-        restaurant = cls(name, location, group_id)
+        restaurant = cls(name, location, rest_group_id)
         restaurant.save()
         return restaurant
     
     def get_related_group(self):
-        from lib.group import Group
-        my_group_id = self._group_id
-        related_group = Group.find_by_id(my_group_id)
-        return related_group
+        from lib.rest_group import RestGroup
+        rest_group_id = self._group_id
+        related_rest_group = RestGroup.find_by_id(rest_group_id)
+        return related_rest_group
     
     def update(self):
-        CURSOR.execute("UPDATE restaurants SET name = ?, location = ?, group_id = ? WHERE id = ?", (self._name, self._location, self._group_id, self.id,))
+        CURSOR.execute("UPDATE restaurants SET name = ?, location = ?,rest_group_id = ? WHERE id = ?", (self._name, self._location, self._rest_group_id, self.id,))
         CONN.commit()
 
     def delete(self):
@@ -109,7 +109,7 @@ class Restaurant:
 
     def save(self):
         try:
-            CURSOR.execute("INSERT INTO restaurants (name, location, group_id) VALUES (?,?,?)", (self.name, self.location, self.group_id))
+            CURSOR.execute("INSERT INTO restaurants (name, location,rest_group_id) VALUES (?,?,?)", (self.name, self.location, self.rest_group_id))
             self.id = CURSOR.lastrowid
             CONN.commit()
         except sqlite3.IntegrityError:

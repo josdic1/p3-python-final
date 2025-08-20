@@ -2,7 +2,7 @@ import sqlite3
 from lib.db import CONN, CURSOR
 
 
-class Group:
+class RestGroup:
 
     all = []
 
@@ -61,7 +61,6 @@ class Group:
         if new_restaurant:
             new_restaurant.group_id = self.id
             new_restaurant.update()
-            print(f"Updated {new_restaurant.name}'s group to {self.name}.")
             return new_restaurant
         else:
             new_restaurant = Restaurant.create(name, location, self.id)

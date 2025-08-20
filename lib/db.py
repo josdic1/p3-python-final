@@ -5,7 +5,7 @@ CURSOR = CONN.cursor()
 CURSOR.execute("PRAGMA foreign_keys = ON;")
 
 SCHEMA = """
-CREATE TABLE IF NOT EXISTS groups (
+CREATE TABLE IF NOT EXISTS rest_groups (
     id INTEGER PRIMARY KEY,
     name TEXT UNIQUE NOT NULL
 );
@@ -14,9 +14,9 @@ CREATE TABLE IF NOT EXISTS restaurants (
     id INTEGER PRIMARY KEY,
     name TEXT NOT NULL,
     location TEXT,
-    group_id INTEGER NOT NULL,
-    FOREIGN KEY (group_id) REFERENCES groups(id) ON DELETE CASCADE
-    UNIQUE(name, location, group_id)
+    rest_group_id INTEGER NOT NULL,
+    FOREIGN KEY (group_id) REFERENCES rest_groups(id) ON DELETE CASCADE,
+    UNIQUE(name, location, rest_group_id)
 );
 """
 
