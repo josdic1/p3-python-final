@@ -25,13 +25,13 @@ class Restaurant:
     @property
     def location(self):
         return self._location
-    
+
     @location.setter
     def location(self, value):
-        if isinstance (value, str) and value.strip():
-            self._location = value
+        if value is None or (isinstance(value, str) and value.strip()):
+            self._location = value if value and value.strip() else None
         else:
-            raise ValueError("No location added")
+            raise ValueError("Location must be a string or None")
 
         
     @property
@@ -64,14 +64,29 @@ class Restaurant:
         return cls._from_db_row(row) if row else None
 
     @classmethod
-    def find_by_name(cls, name):
-        CURSOR.execute("SELECT * FROM restaurants WHERE name = ?", (name,))
+    def find_by_name_and_location(cls, name, location):
+        CURSOR.execute("SELECT * FROM restaurants WHERE name = ? AND location = ?", (name, location,))
         row = CURSOR.fetchone()
         return cls._from_db_row(row) if row else None
+
+    @classmethod
+    def find_exact_by_name(cls, name, location, group_id):
+        if location is None:
+            CURSOR.execute("SELECT * FROM restaurants WHERE name = ? AND location IS NULL AND group_id = ?", (name, group_id))
+        else:
+            CURSOR.execute("SELECT * FROM restaurants WHERE name = ? AND location = ? AND group_id = ?", (name, location, group_id))
+        row = CURSOR.fetchone()
+        return cls._from_db_row(row) if row else None
+
+    @classmethod
+    def input_name_output_id(cls, name, location, group_id):
+        r = cls.find_exact_by_name(name, location, group_id)
+        return r.id if r else None
+        
     
     @classmethod
     def create(cls, name, location, group_id):
-        existing = cls.find_by_name(name)
+        existing = cls.find_by_name_and_location(name, location)
         if existing:
             return existing
         restaurant = cls(name, location, group_id)

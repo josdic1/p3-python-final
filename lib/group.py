@@ -19,7 +19,7 @@ class Group:
         if isinstance (value, str) and value.strip():
             self._name = value
         else:
-            raise ValueError("Name cannot be empty or a duplicate")
+            raise ValueError("Name cannot be empty")
         
     @classmethod
     def _from_db_row(cls, row):
@@ -56,7 +56,7 @@ class Group:
     
     def add_restaurant(self, name, location):
         from lib.restaurant import Restaurant
-        new_restaurant = Restaurant.find_by_name(name)
+        new_restaurant = Restaurant.find_exact_by_name(name, location, self.id)
 
         if new_restaurant:
             new_restaurant.group_id = self.id

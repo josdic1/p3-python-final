@@ -12,8 +12,8 @@ CREATE TABLE IF NOT EXISTS groups (
 
 CREATE TABLE IF NOT EXISTS restaurants (
     id INTEGER PRIMARY KEY,
-    name TEXT UNIQUE NOT NULL,
-    location TEXT NULL,
+    name TEXT NOT NULL,
+    location TEXT,
     group_id INTEGER NOT NULL,
     FOREIGN KEY (group_id) REFERENCES groups(id) ON DELETE CASCADE
 );

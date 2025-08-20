@@ -1,7 +1,7 @@
 import sqlite3
 
-CONN = sqlite3.connect('database.db')
-CURSOR = CONN.cursor
+CONN = sqlite3.connect("database.db")
+CURSOR = CONN.cursor()
 
 SQL = """
 DROP TABLE IF EXISTS restaurants;
