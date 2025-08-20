@@ -27,24 +27,38 @@ def groups_menu():
     choice = input("Enter group id to view, or B to go back: ")
 
     if choice.upper() == "B":
-        print("\nReturning to main menu")
-        return
+        return   # goes to main menu
 
     elif choice.isdigit():
         group = RestGroup.find_by_id(int(choice))
         if group:
-            for r in group.restaurants():
-                print(f"{r.id}: {r.name}")
-            choice = input("Enter restaurant id to view, or B to go back: ")
-
-            if choice.upper() == "B":
-                print("\nReturning to main menu")
-                return
-
+            restaurants_in_group(group)
         else:
             print("No group found with that id.")
     else:
         print("Invalid choice")
+
+def restaurants_in_group(group):
+    for r in group.restaurants():
+        print(f"{r.id}: {r.name}")
+    choice = input("Enter restaurant id to view, or B to go back: ")
+
+    if choice.upper() == "B":
+        return   # straight to main menu
+
+    elif choice.isdigit():
+        restaurant = Restaurant.find_by_id(int(choice))
+        if restaurant:
+            show_restaurant(restaurant)
+        else:
+            print("No restaurant found with that id.")
+    else:
+        print("Invalid choice")
+
+def show_restaurant(restaurant):
+    print(f"\nRestaurant {restaurant.id}: {restaurant.name}")
+    input("Press Enter to go back...")  
+    return   # back to main menu
 
 def restaurants_menu():
     print("TODO: restaurants submenu")
