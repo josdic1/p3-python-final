@@ -1,6 +1,5 @@
 import sqlite3
 from lib.db import CONN, CURSOR
-from lib.group import Group
 
 class Restaurant:
 
@@ -80,6 +79,7 @@ class Restaurant:
         return restaurant
     
     def get_related_group(self):
+        from lib.group import Group
         my_group_id = self._group_id
         related_group = Group.find_by_id(my_group_id)
         return related_group
@@ -93,9 +93,12 @@ class Restaurant:
         CONN.commit()
 
     def save(self):
-        CURSOR.execute("INSERT INTO restaurants (name, location, group_id) VALUES (?,?,?)", (self.name, self.location, self.group_id))
-        self.id = CURSOR.lastrowid
-        CONN.commit()
+        try:
+            CURSOR.execute("INSERT INTO restaurants (name, location, group_id) VALUES (?,?,?)", (self.name, self.location, self.group_id))
+            self.id = CURSOR.lastrowid
+            CONN.commit()
+        except sqlite3.IntegrityError:
+            print("Unable to save this record")
 
 
         
