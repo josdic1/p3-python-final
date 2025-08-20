@@ -86,7 +86,7 @@ class Restaurant:
     
     @classmethod
     def create(cls, name, location, group_id):
-        existing = cls.find_by_name_and_location(name, location)
+        existing = cls.find_exact_by_name(name, location, group_id)
         if existing:
             return existing
         restaurant = cls(name, location, group_id)
