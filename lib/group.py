@@ -1,5 +1,6 @@
 import sqlite3
 from .db import CONN, CURSOR
+from .restaurant import Restaurant
 
 class Group:
 
@@ -53,6 +54,18 @@ class Group:
         group.save()
         return group
     
+    def add_restaurant(self, name, location, group_id):
+        new_restaurant = Restaurant.find_by_name(name)
+
+        if new_restaurant:
+            new_restaurant._group_id = self.id
+            new_restaurant.update()
+            print(f"Updated {new_restaurant.name}'s group to {self.name}.")
+            return new_restaurant
+        else:
+            new_restaurant = Restaurant.create(name, location, group_id)
+            return new_restaurant
+
     def update(self):
         CURSOR.execute("UPDATE group SET name = ? WHERE id = ?", (self._name,self.id,))
         CONN.commit()
