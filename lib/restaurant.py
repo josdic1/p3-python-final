@@ -1,5 +1,6 @@
 import sqlite3
 from .db import CONN, CURSOR
+from .group import Group
 
 class Restaurant:
 
@@ -76,6 +77,11 @@ class Restaurant:
         restaurant = cls(name)
         restaurant.save()
         return restaurant
+    
+    def get_related_group(self):
+        my_group_id = self._group_id
+        related_group = Group.find_by_id(my_group_id)
+        return related_group
     
     def update(self):
         CURSOR.execute("UPDATE restaurants SET name = ? WHERE id = ?", (self._name,self.id,))
