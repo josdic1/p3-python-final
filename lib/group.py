@@ -59,13 +59,12 @@ class Group:
         new_restaurant = Restaurant.find_by_name(name)
 
         if new_restaurant:
-            new_restaurant._group_id = self.id
+            new_restaurant.group_id = self.id
             new_restaurant.update()
             print(f"Updated {new_restaurant.name}'s group to {self.name}.")
             return new_restaurant
         else:
-            new_restaurant = Restaurant.create(name, location)
-            new_restaurant.id = self.id
+            new_restaurant = Restaurant.create(name, location, self.id)
             return new_restaurant
 
     def update(self):
