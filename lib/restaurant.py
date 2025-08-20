@@ -10,6 +10,10 @@ class Restaurant:
         self.location = location
         self.rest_group_id = rest_group_id
 
+    def __repr__(self):
+        return f"<Restaurant id={self.id} name='{self.name}' location='{self.location}' group_id={self.rest_group_id}>"
+
+
     @property
     def name(self):
         return self._name
@@ -94,7 +98,7 @@ class Restaurant:
     
     def get_related_group(self):
         from lib.rest_group import RestGroup
-        rest_group_id = self._group_id
+        rest_group_id = self._rest_group_id
         related_rest_group = RestGroup.find_by_id(rest_group_id)
         return related_rest_group
     

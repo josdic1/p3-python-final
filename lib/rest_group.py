@@ -8,6 +8,9 @@ class RestGroup:
         self.id = id
         self.name = name
 
+    def __repr__(self):
+        return f"<RestGroup id={self.id} name='{self.name}'>"
+
     @property
     def name(self):
         return self._name
@@ -52,7 +55,7 @@ class RestGroup:
         rest_group.save()
         return rest_group
     
-    def find_restaurants_by_rest_group(self):
+    def restaurants(self):
         from lib.restaurant import Restaurant
         CURSOR.execute("SELECT * FROM restaurants WHERE rest_group_id = ?", (self.id,))
         rows = CURSOR.fetchall()
