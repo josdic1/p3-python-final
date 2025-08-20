@@ -33,27 +33,38 @@ class Restaurant:
         else:
             raise ValueError("group_id cannot be empty or a duplicate")
         
+    @property
+    def location(self):
+        return self._location
+    
+    @location.setter
+    def location(self, value):
+        if isinstance (value, str) and value.strip():
+            self._location = value
+        else:
+            raise ValueError("location cannot be empty or a duplicate")
+        
     @classmethod
     def _from_db_row(cls, row):
-        group = cls(row[1])
-        group.id = (row[0])
-        return group
+        restaurant = cls(row[1])
+        restaurant.id = (row[0])
+        return restaurant
     
     @classmethod
     def get_all(cls):
-        CURSOR.execute("SELECT * FROM groups")
+        CURSOR.execute("SELECT * FROM restaurants")
         rows = CURSOR.fetchall()
         return [cls._from_db_row(row) for row in rows] if rows else []
     
     @classmethod
     def find_by_id(cls, id):
-        CURSOR.execute("SELECT * FROM groups WHERE id = ?", (id,))
+        CURSOR.execute("SELECT * FROM restaurants WHERE id = ?", (id,))
         row = CURSOR.fetchone()
         return cls._from_db_row(row) if row else None
 
     @classmethod
     def find_by_name(cls, name):
-        CURSOR.execute("SELECT * FROM groups WHERE name = ?", (name,))
+        CURSOR.execute("SELECT * FROM restaurants WHERE name = ?", (name,))
         row = CURSOR.fetchone()
         return cls._from_db_row(row) if row else None
     
@@ -62,20 +73,20 @@ class Restaurant:
         existing = cls.find_by_name(name)
         if existing:
             return existing
-        group = cls(name)
-        group.save()
-        return group
+        restaurant = cls(name)
+        restaurant.save()
+        return restaurant
     
     def update(self):
-        CURSOR.execute("UPDATE group SET name = ? WHERE id = ?", (self._name,self.id,))
+        CURSOR.execute("UPDATE restaurants SET name = ? WHERE id = ?", (self._name,self.id,))
         CONN.commit()
 
     def delete(self):
-        CURSOR.execute("DELETE FROM groups WHERE id = ?", (self.id,))
+        CURSOR.execute("DELETE FROM restaurants WHERE id = ?", (self.id,))
         CONN.commit()
 
     def save(self):
-        CURSOR.execute("INSERT INTO groups (name) VALUES (?)", (self._name,))
+        CURSOR.execute("INSERT INTO restaurants (name) VALUES (?)", (self._name,))
         self.id = self.id
         CONN.commit()
 
