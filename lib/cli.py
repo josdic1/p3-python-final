@@ -29,26 +29,55 @@ def groups_menu():
     for rg in all:
         print(f"{rg.id}: {rg.name}")
 
-    choice = input("\nEnter group id to view, N to create new group, or B to go back: ")
+    while True:
+        print("\n=== Actions ===")
+        print("Enter ID# to view restaurants")
+        print("Enter N to create new group")
+        print("Enter D to delete a group")
+        print("Enter B to to go back")
+    
+        choice = input("> ")
+        if choice.upper() == "N":
+            create_group()
+        elif choice.upper() == "D":
+            delete_group()
+        elif choice.upper() == "B":
+            return
+        elif choice.isdigit():
+            view_group()
 
-    if choice.upper() == "B":
-        return
+def create_group():
+    pass
 
-    elif choice.upper() == "N":
-        print("\n=== New Restaurant Group ===")
-        name = input("Enter new group name: ")
+def delete_group():
+    pass
 
-        new_group = RestGroup.create(name)
-        print(f"\nCreated new group: {new_group.id} - {new_group.name}")
+def view_group():
+    pass
+
+
+    
+
+    # choice = input("\nEnter group id to view, N to create new group, or B to go back: ")
+
+    # if choice.upper() == "B":
+    #     return
+
+    # elif choice.upper() == "N":
+    #     print("\n=== New Restaurant Group ===")
+    #     name = input("Enter new group name: ")
+
+    #     new_group = RestGroup.create(name)
+    #     print(f"\nCreated new group: {new_group.id} - {new_group.name}")
         
-    elif choice.isdigit():
-        group = RestGroup.find_by_id(int(choice))
-        if group:
-            restaurants_in_group(group)
-        else:
-            print("No group found with that id.")
-    else:
-        print("Invalid choice")
+    # elif choice.isdigit():
+    #     group = RestGroup.find_by_id(int(choice))
+    #     if group:
+    #         restaurants_in_group(group)
+    #     else:
+    #         print("No group found with that id.")
+    # else:
+    #     print("Invalid choice")
 
 
 def restaurants_in_group(group):
@@ -56,14 +85,23 @@ def restaurants_in_group(group):
     for r in group.restaurants():
         print(f"{r.id}: {r.name}")
 
-    choice = input("Enter restaurant id to view, N to create/assign restaurant to this goup, or B to go back: ")
+    choice = input("Enter restaurant id to view, N to create/assign restaurant to this group, or B to go back: ")
 
     if choice.upper() == "B":
         return
+    
+    elif choice.upper() == "N":
+        print("\n=== New Restaurant ===")
+        name = input("Enter new restaurant name: ")
+        location = input("Enter new restaurant location: ")
+        
+        new_restaurant = Restaurant.create(name, location, group.id)
+        print(f"\nCreated new restaurant: {new_restaurant.id} - {new_restaurant.name} in {new_restaurant.location} for {group.name}")
+        
     elif choice.isdigit():
-        restaurant = Restaurant.find_by_id(int(choice))
-        if restaurant:
-            show_restaurant(restaurant)
+        selected = Restaurant.find_by_id(int(choice))
+        if selected:
+            show_restaurant(selected)
         else:
             print("No restaurant found with that id.")
     else:
