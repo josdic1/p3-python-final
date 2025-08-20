@@ -2,12 +2,14 @@
 from lib.rest_group import RestGroup
 from lib.restaurant import Restaurant
 
+
 def run():
     while True:
-        print("\nMain Menu")
+        print("\n=== Main Menu ===")
         print("1. Restaurant Groups")
         print("2. Restaurants")
         print("3. Exit")
+
         choice = input("> ")
 
         if choice == "1":
@@ -20,15 +22,25 @@ def run():
         else:
             print("Invalid choice")
 
+
 def groups_menu():
+    print("\n=== Restaurant Groups ===")
     all = RestGroup.get_all()
     for rg in all:
         print(f"{rg.id}: {rg.name}")
-    choice = input("Enter group id to view, or B to go back: ")
+
+    choice = input("\nEnter group id to view, N to create new group, or B to go back: ")
 
     if choice.upper() == "B":
         return
 
+    elif choice.upper() == "N":
+        print("\n=== New Restaurant Group ===")
+        name = input("Enter new group name: ")
+
+        new_group = RestGroup.create(name)
+        print(f"\nCreated new group: {new_group.id} - {new_group.name}")
+        
     elif choice.isdigit():
         group = RestGroup.find_by_id(int(choice))
         if group:
@@ -38,14 +50,16 @@ def groups_menu():
     else:
         print("Invalid choice")
 
+
 def restaurants_in_group(group):
+    print(f"\n=== Restaurants in {group.name} ===")
     for r in group.restaurants():
         print(f"{r.id}: {r.name}")
-    choice = input("Enter restaurant id to view, or B to go back: ")
+
+    choice = input("Enter restaurant id to view, N to create/assign restaurant to this goup, or B to go back: ")
 
     if choice.upper() == "B":
         return
-
     elif choice.isdigit():
         restaurant = Restaurant.find_by_id(int(choice))
         if restaurant:
@@ -55,33 +69,40 @@ def restaurants_in_group(group):
     else:
         print("Invalid choice")
 
+
 def show_restaurant(restaurant):
-    print(f"\nRestaurant {restaurant.id}: {restaurant.name}")
-    input("Press Enter to go back...")  
-    return   
+    print(f"\n--- Restaurant ---")
+    print(f"ID: {restaurant.id}")
+    print(f"Name: {restaurant.name}")
+    input("\nPress Enter to go back...")
+
 
 def restaurants_menu():
+    print("\n=== All Restaurants ===")
     all = Restaurant.get_all()
     for r in all:
         print(f"{r.id}: {r.name}")
+
     choice = input("Enter restaurant id to view, or B to go back: ")
 
     if choice.upper() == "B":
         return
-    
     elif choice.isdigit():
         restaurant = Restaurant.find_by_id(int(choice))
         if restaurant:
             restaurant_selection(restaurant)
         else:
-            print("No restaurant_selection found with that ID")
+            print("No restaurant found with that ID.")
     else:
-        print("invalid choice")
+        print("Invalid choice")
+
 
 def restaurant_selection(restaurant):
-        print(f"\nRestaurant {restaurant.id}: {restaurant.name}")
-        input("Press Enter to go back...")  
-        return   
+    print(f"\n--- Restaurant ---")
+    print(f"ID: {restaurant.id}")
+    print(f"Name: {restaurant.name}")
+    input("\nPress Enter to go back...")
+
 
 if __name__ == "__main__":
     run()
