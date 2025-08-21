@@ -97,7 +97,48 @@ def view_group(group_id):
 
 
 def restaurants_menu():
-    pass
+    while True:
+        print("\n=== Restaurants ===")
+        all = Restaurant.get_all()
+        for r in all:
+            print(f"{r.id}: {r.name} - {r.location}")  
+
+        print("\n=== Actions ===")
+        print("Enter DB ID# to view restaurant")
+        print("N = new, D = delete, B = back")
+
+        choice = input("> ")
+        if choice.upper() == "N":
+            new_restaurant_reroute()
+        elif choice.upper() == "D":
+            delete_restaurant()
+        elif choice.upper() == "B":
+            return
+        elif choice.isdigit():
+            view_group(int(choice))
+
+def new_restaurant_reroute():
+    print("You must select a parent restaurant group BEFORE creating a new restaurant")
+    print("\nI. Choose a parent restaurant group")
+    print("II. Enter the parent restaurant group ID# (i.e. '==> 1: YUM! Brands')")
+    print("III. Select 'N' to add a new restaurant to the group")
+    groups_menu()
+
+def delete_restaurant():
+    print("\n=== Choose restaurant to delete ===")
+    all = Restaurant.get_all()
+    for r in all:
+        print(f"{r.id}: {r.name} - {r.location}")
+
+    print("\n=== DELETE Restaurant ===")
+    id_str = input("Enter restaurant ID# to delete: ")
+
+    if id_str.isdigit():
+        id = int(id_str)
+        Restaurant.delete(id)
+        print(f"{id} has been deleted")
+    else:
+        print("Invalid ID")
 
 
 if __name__ == "__main__":

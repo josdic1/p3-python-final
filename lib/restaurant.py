@@ -106,8 +106,9 @@ class Restaurant:
         CURSOR.execute("UPDATE restaurants SET name = ?, location = ?,rest_group_id = ? WHERE id = ?", (self._name, self._location, self._rest_group_id, self.id,))
         CONN.commit()
 
-    def delete(self):
-        CURSOR.execute("DELETE FROM restaurants WHERE id = ?", (self.id,))
+    @classmethod
+    def delete(cls, id):
+        CURSOR.execute("DELETE FROM restaurants WHERE id = ?", (id,))
         CONN.commit()
 
     def save(self):
