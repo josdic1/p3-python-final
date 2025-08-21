@@ -8,8 +8,14 @@ This is my Phase 3 CLI project. It’s a command line application where you can 
 
 ## How to Use
 Run the CLI with:
-```python lib/cli.py```
+```main.py```
+Runs the whole program.  
+```python
+from cli.main import run
 
+if __name__ == "__main__":
+    run()
+```    
 ### Use the menus to navigate:
 
 - **Main menu** lets you choose Groups or Restaurants  
@@ -19,7 +25,7 @@ Run the CLI with:
 
 ## Files
 
-```python lib/cli.py``` This runs the CLI or main entry point. It prints menus, takes user input, and calls functions for creating, searching, and deleting.
+```python main.py``` This runs the CLI or main entry point. It prints menus, takes user input, and calls functions for creating, searching, and deleting.
 
 ```lib/rest_group.py``` 
 Defines the **RestGroup** class. Represents a restaurant group (like **YUM! Brands**, owner of Taco Bell, KFC, Pizza Hut, etc).  
@@ -35,28 +41,29 @@ Methods:
 - `.restaurants()` → see all restaurants that belong to this group  
 
 ```lib/restaurant.py```
-Defines the Restaurant class. Represents one restaurant. Attributes: id, name, location, rest_group_id. Includes methods to get all restaurants, find by id, find by name, create, delete. It also has a ```get_related_group(self)``` method that returns a restaurants corresponding RestGroup.
+Defines the Restaurant class and represents one restaurant. 
+
+#### Attributes: 
+```id```, ```name```, ```location```, ```rest_group_id```. 
+
+Includes methods to ```get all``` restaurants, ```find by id```, ```find by name```, ```create```, ```delete```. It also has a ```get_related_group(self)``` method that returns a restaurants corresponding **RestGroup**.
 
 ```lib/db.py```
 Sets up the database connection with SQLite. Provides CONN and CURSOR that the models use for queries.
 
-```main.py```
-Runs the whole program.  
-```python
-from lib.cli import run
-
-if __name__ == "__main__":
-    run()
-```    
-
 ```drop_tables.py```
-Utility script to clear out the database.
-It drops the restaurants and groups tables and commits changes. Run this if you want to reset everything.
+Utility script to clear out the database. It drops the restaurants and groups tables and commits changes. Run this if you want to reset everything.
+
+### CLI
+```cli/main.py```
+Contains the run() function and main menu loop.
+
+```cli/groups_cli.py```
+Functions for group-related menus and actions.
+
+```cli/restaurants_cli.py```
+Functions for restaurant-related menus and actions.
 
 ## Notes
 
 - Written with Python 3.8, SQLite
-
-
-
-
