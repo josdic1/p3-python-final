@@ -27,23 +27,43 @@ def groups_menu():
     while True:
         print("\n=== Restaurant Groups ===")
         all = RestGroup.get_all()
-        for rg in all:
-            print(f"{rg.id}: {rg.name}")  
+        for i, rg in enumerate(all, start=1):
+            print(f"{i}. {rg.name}")
 
         print("\n=== Actions ===")
         print("Enter DB ID# to view restaurants")
-        print("N = new, D = delete, B = back")
-
+        print("S = Search by name, N = new, D = delete, B = back, X = exit")
+        
         choice = input("> ")
+
         if choice.upper() == "N":
             create_group()
         elif choice.upper() == "D":
             delete_group()
         elif choice.upper() == "B":
             return
+        elif choice.upper() == "S":
+            search_by_name()
         elif choice.isdigit():
-            view_group(int(choice))
+            index = int(choice) - 1
+        if 0 <= index < len(all):
+            group = all[index]
+            view_group(group.id)
+        else:
+            print("Invalid choice")
 
+
+def search_by_name():
+    print("\n=== Search Restaurant Groups by Name ===")
+    name = input("Enter group name: ").strip() or None
+
+    if name:
+        group = RestGroup.find_by_name(name)
+        if group:
+            print(f"MATCH FOUND! {group.name}")
+            view_group(group.id)
+        else:
+            print(f"NO MATCH FOUND!")
 
 def create_group():
     print("\n=== New Restaurant Group ===")
@@ -56,18 +76,22 @@ def create_group():
 def delete_group():
     print("\n=== Choose group to delete ===")
     all = RestGroup.get_all()
-    for rg in all:
-        print(f"{rg.id}: {rg.name}")
+    for i, rg in enumerate(all, start=1):
+        print(f"{i}. {rg.name}")
 
     print("\n=== DELETE Restaurant Group ===")
-    id_str = input("Enter group id to delete: ")
+    choice = input("Enter number to delete: ")
 
-    if id_str.isdigit():
-        id = int(id_str)
-        RestGroup.delete(id)
-        print(f"{id} has been deleted")
+    if choice.isdigit():
+        index = int(choice) - 1
+        if 0 <= index < len(all):
+            group = all[index]
+            RestGroup.delete(group.id)
+            print(f"{group.name} has been deleted")
+        else:
+            print("Invalid selection")
     else:
-        print("Invalid ID")
+        print("Invalid input")
 
 
 def view_group(group_id):
@@ -82,11 +106,14 @@ def view_group(group_id):
         for r in restaurants:
             print(f"{r.id}. {r.name}")
 
-        print("\nOptions: N = new restaurant, B = back")
+        print("\nOptions: N = new restaurant, B = back, X = exit")
         choice = input("> ")
 
         if choice.upper() == "B":
             return
+        elif choice.upper() == "X":
+            print("Goodbye!")
+            exit()
         elif choice.upper() == "N":
             print("\n=== Creating new restaurant ===")
             name = input("Enter restaurant name: ")
@@ -100,22 +127,46 @@ def restaurants_menu():
     while True:
         print("\n=== Restaurants ===")
         all = Restaurant.get_all()
-        for r in all:
-            print(f"{r.id}: {r.name} - {r.location}")  
+        for i, r in enumerate(all, start=1):
+            print(f"{i}. {r.name} - {r.location}")
 
         print("\n=== Actions ===")
-        print("Enter DB ID# to view restaurant")
-        print("N = new, D = delete, B = back")
+        print("Enter number to view restaurant")
+        print("S = search by location, N = new, D = delete, B = back, X = exit")
 
         choice = input("> ")
         if choice.upper() == "N":
             new_restaurant_reroute()
         elif choice.upper() == "D":
             delete_restaurant()
+        elif choice.upper() == "S":
+            search_by_name()
         elif choice.upper() == "B":
             return
+        elif choice.upper() == "X":
+            print("Goodbye!")
+            exit()
         elif choice.isdigit():
-            view_group(int(choice))
+            index = int(choice) - 1
+            if 0 <= index < len(all):
+                restaurant = all[index]
+                view_restaurant(restaurant.id)
+            else:
+                print("Invalid selection")
+        else:
+            print("Invalid input")
+
+def search_by_name():
+    print("\n=== Search by Restaurant name ===")
+    name = input("Enter restaurant name: ").strip() or None
+
+    if name:
+        restaurant = Restaurant.find_by_name(name)
+        if restaurant:
+            print(f"MATCH FOUND! {restaurant.name}")
+            view_restaurant(restaurant.id)
+        else:
+            print(f"NO MATCH FOUND!")
 
 def new_restaurant_reroute():
     print("You must select a parent restaurant group BEFORE creating a new restaurant")
@@ -127,19 +178,45 @@ def new_restaurant_reroute():
 def delete_restaurant():
     print("\n=== Choose restaurant to delete ===")
     all = Restaurant.get_all()
-    for r in all:
-        print(f"{r.id}: {r.name} - {r.location}")
+    for i, r in enumerate(all, start=1):
+        print(f"{i}. {r.name} - {r.location}")
 
     print("\n=== DELETE Restaurant ===")
-    id_str = input("Enter restaurant ID# to delete: ")
+    choice = input("Enter number to delete: ")
 
-    if id_str.isdigit():
-        id = int(id_str)
-        Restaurant.delete(id)
-        print(f"{id} has been deleted")
+    if choice.isdigit():
+        index = int(choice) - 1
+        if 0 <= index < len(all):
+            restaurant = all[index]
+            Restaurant.delete(restaurant.id)
+            print(f"{restaurant.name} has been deleted")
+        else:
+            print("Invalid selection")
     else:
-        print("Invalid ID")
+        print("Invalid input")
 
+def view_restaurant(restaurant_id):
+    while True:
+        restaurant = Restaurant.find_by_id(restaurant_id)
+        if restaurant:
+            group = RestGroup.find_by_id(restaurant.rest_group_id)
+    
+        if group:
+            print(f"\n=== {restaurant.name} ===")
+            print(f"Location: {restaurant.location}")
+            print(f"Parent Group: {group.name}")
+
+
+            print("\nOptions: B = back, X = exit")
+            choice = input("> ")
+
+        if choice.upper() == "B":
+            return
+        elif choice.upper() == "X":
+            print("Goodbye!")
+            exit()
+        else:
+            print("Invalid ID")
 
 if __name__ == "__main__":
     run()

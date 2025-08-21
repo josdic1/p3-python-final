@@ -67,6 +67,12 @@ class Restaurant:
         return cls._from_db_row(row) if row else None
 
     @classmethod
+    def find_by_name(cls, name):
+        CURSOR.execute("SELECT * FROM restaurants WHERE name = ?", (name,))
+        row = CURSOR.fetchone()
+        return cls._from_db_row(row) if row else None
+
+    @classmethod
     def find_by_name_and_location(cls, name, location):
         CURSOR.execute("SELECT * FROM restaurants WHERE name = ? AND location = ?", (name, location,))
         row = CURSOR.fetchone()
