@@ -10,6 +10,7 @@ def run():
         print("2. Restaurants")
         print("3. Exit")
 
+        print()
         choice = input("> ")
 
         if choice == "1":
@@ -31,9 +32,10 @@ def groups_menu():
             print(f"{i}. {rg.name}")
 
         print("\n=== Actions ===")
-        print("Enter DB ID# to view restaurants")
+        print("Enter number to view restaurants")
         print("S = Search by name, N = new, D = delete, B = back, X = exit")
         
+        print()
         choice = input("> ")
 
         if choice.upper() == "N":
@@ -43,17 +45,18 @@ def groups_menu():
         elif choice.upper() == "B":
             return
         elif choice.upper() == "S":
-            search_by_name()
+            search_by_rest_group_name()
         elif choice.isdigit():
             index = int(choice) - 1
-        if 0 <= index < len(all):
-            group = all[index]
-            view_group(group.id)
+            if 0 <= index < len(all):
+                group = all[index]
+                view_group(group.id)
+            else:
+                print("Invalid choice")
         else:
             print("Invalid choice")
 
-
-def search_by_name():
+def search_by_rest_group_name():
     print("\n=== Search Restaurant Groups by Name ===")
     name = input("Enter group name: ").strip() or None
 
@@ -70,7 +73,7 @@ def create_group():
     name = input("Enter new group name: ")
 
     new_group = RestGroup.create(name)
-    print(f"Created new group: {new_group.id} - {new_group.name}")
+    print(f"Created new group: {new_group.name}")
     
 
 def delete_group():
@@ -93,7 +96,6 @@ def delete_group():
     else:
         print("Invalid input")
 
-
 def view_group(group_id):
     group = RestGroup.find_by_id(group_id)
     if not group:
@@ -103,24 +105,25 @@ def view_group(group_id):
     while True:
         print(f"\n=== Restaurants in {group.name} ===")
         restaurants = group.restaurants()
-        for r in restaurants:
-            print(f"{r.id}. {r.name}")
+        for i, r in enumerate(restaurants, start=1):
+            print(f"{i}. {r.name}")
 
         print("\nOptions: N = new restaurant, B = back, X = exit")
+        print()
         choice = input("> ")
 
         if choice.upper() == "B":
             return
         elif choice.upper() == "X":
             print("Goodbye!")
-            exit()
+            return
         elif choice.upper() == "N":
             print("\n=== Creating new restaurant ===")
             name = input("Enter restaurant name: ")
             location = input("Enter restaurant location: ")
 
             new_restaurant = group.add_restaurant(name, location)
-            print(f"Created new retaurant: {new_restaurant.id} - {new_restaurant.name} in {new_restaurant.location} in {group.name}")
+            print(f"Created new restaurant: {new_restaurant.name} in {new_restaurant.location} in {group.name}")
 
 
 def restaurants_menu():
@@ -134,18 +137,19 @@ def restaurants_menu():
         print("Enter number to view restaurant")
         print("S = search by location, N = new, D = delete, B = back, X = exit")
 
+        print()
         choice = input("> ")
         if choice.upper() == "N":
             new_restaurant_reroute()
         elif choice.upper() == "D":
             delete_restaurant()
         elif choice.upper() == "S":
-            search_by_name()
+            search_by_restaurant_name()
         elif choice.upper() == "B":
             return
         elif choice.upper() == "X":
             print("Goodbye!")
-            exit()
+            return
         elif choice.isdigit():
             index = int(choice) - 1
             if 0 <= index < len(all):
@@ -156,7 +160,7 @@ def restaurants_menu():
         else:
             print("Invalid input")
 
-def search_by_name():
+def search_by_restaurant_name():
     print("\n=== Search by Restaurant name ===")
     name = input("Enter restaurant name: ").strip() or None
 
@@ -171,7 +175,7 @@ def search_by_name():
 def new_restaurant_reroute():
     print("You must select a parent restaurant group BEFORE creating a new restaurant")
     print("\nI. Choose a parent restaurant group")
-    print("II. Enter the parent restaurant group ID# (i.e. '==> 1: YUM! Brands')")
+    print("II. Enter the parent restaurant number (i.e. '==> 1: YUM! Brands')")
     print("III. Select 'N' to add a new restaurant to the group")
     groups_menu()
 
@@ -208,13 +212,14 @@ def view_restaurant(restaurant_id):
 
 
             print("\nOptions: B = back, X = exit")
+            print()
             choice = input("> ")
 
         if choice.upper() == "B":
             return
         elif choice.upper() == "X":
             print("Goodbye!")
-            exit()
+            return
         else:
             print("Invalid ID")
 
