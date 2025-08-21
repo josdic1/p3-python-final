@@ -78,8 +78,9 @@ class RestGroup:
         CURSOR.execute("UPDATE rest_groups SET name = ? WHERE id = ?", (self._name,self.id,))
         CONN.commit()
 
-    def delete(self):
-        CURSOR.execute("DELETE FROM rest_groups WHERE id = ?", (self.id,))
+    @classmethod
+    def delete(cls, id):
+        CURSOR.execute("DELETE FROM rest_groups WHERE id = ?", (id,))
         CONN.commit()
 
     def save(self):

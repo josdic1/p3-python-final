@@ -24,18 +24,19 @@ def run():
 
 
 def groups_menu():
-    print("\n=== Restaurant Groups ===")
-    all = RestGroup.get_all()
-    for rg in all:
-        print(f"{rg.id}: {rg.name}")
 
     while True:
+        print("\n=== Restaurant Groups ===")
+        all = RestGroup.get_all()
+        for i, rg in enumerate(all, start=1):
+            print(f"{i}: {rg.name}")
+
         print("\n=== Actions ===")
         print("Enter ID# to view restaurants")
         print("Enter N to create new group")
         print("Enter D to delete a group")
-        print("Enter B to to go back")
-    
+        print("Enter B to go back")
+
         choice = input("> ")
         if choice.upper() == "N":
             create_group()
@@ -46,13 +47,38 @@ def groups_menu():
         elif choice.isdigit():
             view_group()
 
+
 def create_group():
-    print("create")
+    print("\n=== New Restaurant Group ===")
+    name = input("Enter new group name: ")
+
+    new_group = RestGroup.create(name)
+    print(f"Created new group: {new_group.id} - {new_group.name}")
+    
 
 def delete_group():
-    pass
+    print("\n=== Choose group to delete ===")
+    all = RestGroup.get_all()
+    for rg in all:
+        print(f"{rg.id}: {rg.name}")
+
+    print("\n=== DELETE Restaurant Group ===")
+    id_str = input("Enter group id to delete: ")
+
+    if id_str.isdigit():
+        id = int(id_str)
+        RestGroup.delete(id)
+        print(f"{id} has been deleted")
+    else:
+        print("Invalid ID")
+
+
+
 
 def view_group():
+    pass
+
+def restaurants_menu():
     pass
 
 
