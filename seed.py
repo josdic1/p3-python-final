@@ -20,7 +20,7 @@ def seed():
     chipotle = RestGroup.create("Chipotle Mexican Grill")
     wingstop = RestGroup.create("Wingstop Inc.")
 
-    # restaurants (30 total, 3 per group)
+    # restaurants 
     Restaurant.create("KFC", "Louisville, KY", yum.id)
     Restaurant.create("Taco Bell", "Irvine, CA", yum.id)
     Restaurant.create("Pizza Hut", "Plano, TX", yum.id)

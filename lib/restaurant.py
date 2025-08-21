@@ -86,11 +86,6 @@ class Restaurant:
             CURSOR.execute("SELECT * FROM restaurants WHERE name = ? AND location = ? AND rest_group_id = ?", (name, location, rest_group_id,))
         row = CURSOR.fetchone()
         return cls._from_db_row(row) if row else None
-
-    @classmethod
-    def input_name_output_id(cls, name, location, rest_group_id):
-        r = cls.find_exact_by_name(name, location, rest_group_id)
-        return r.id if r else None
         
     
     @classmethod
