@@ -1,4 +1,4 @@
-from lib.cli import run
+from cli.cli import run
 
 
 

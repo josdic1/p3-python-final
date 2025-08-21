@@ -42,6 +42,9 @@ def groups_menu():
             create_group()
         elif choice.upper() == "D":
             delete_group()
+        elif choice.upper() == "X":
+            print("Goodbye!")
+            return 
         elif choice.upper() == "B":
             return
         elif choice.upper() == "S":
@@ -109,22 +112,29 @@ def view_group(group_id):
             print(f"{i}. {r.name}")
 
         print("\nOptions: N = new restaurant, B = back, X = exit")
-        print()
-        choice = input("> ")
+        choice = input("> ").upper()
 
-        if choice.upper() == "B":
+        if choice == "B":
             return
-        elif choice.upper() == "X":
+        elif choice == "X":
             print("Goodbye!")
             return
-        elif choice.upper() == "N":
+        elif choice == "N":
             print("\n=== Creating new restaurant ===")
             name = input("Enter restaurant name: ")
             location = input("Enter restaurant location: ")
-
             new_restaurant = group.add_restaurant(name, location)
             print(f"Created new restaurant: {new_restaurant.name} in {new_restaurant.location} in {group.name}")
-
+        elif choice.isdigit():
+            index = int(choice) - 1
+            if 0 <= index < len(restaurants):
+                restaurant = restaurants[index]
+                view_restaurant(restaurant.id)
+            else:
+                print("Invalid selection")
+        else:
+            print("Invalid input")
+        
 
 def restaurants_menu():
     while True:
@@ -200,28 +210,31 @@ def delete_restaurant():
         print("Invalid input")
 
 def view_restaurant(restaurant_id):
+    restaurant = Restaurant.find_by_id(restaurant_id)
+    if not restaurant:
+        print("No restaurant found with that ID")
+        return
+
+    group = RestGroup.find_by_id(restaurant.rest_group_id)
+    if not group:
+        print("Parent group not found")
+        return
+
     while True:
-        restaurant = Restaurant.find_by_id(restaurant_id)
-        if restaurant:
-            group = RestGroup.find_by_id(restaurant.rest_group_id)
-    
-        if group:
-            print(f"\n=== {restaurant.name} ===")
-            print(f"Location: {restaurant.location}")
-            print(f"Parent Group: {group.name}")
+        print(f"\n=== {restaurant.name} ===")
+        print(f"Location: {restaurant.location}")
+        print(f"Parent Group: {group.name}")
 
+        print("\nOptions: B = back, X = exit")
+        choice = input("> ").upper()
 
-            print("\nOptions: B = back, X = exit")
-            print()
-            choice = input("> ")
-
-        if choice.upper() == "B":
+        if choice == "B":
             return
-        elif choice.upper() == "X":
+        elif choice == "X":
             print("Goodbye!")
-            return
+            return 
         else:
-            print("Invalid ID")
+            print("Invalid choice")
 
 if __name__ == "__main__":
     run()
