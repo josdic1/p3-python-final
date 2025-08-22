@@ -24,4 +24,5 @@ CREATE TABLE IF NOT EXISTS restaurants (
 CURSOR.executescript(SCHEMA)
 CONN.commit()
 
-print("✅ Tables ready")
+if __name__ == "__main__":
+    print("✅ Tables ready")

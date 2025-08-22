@@ -1,8 +1,9 @@
 import sqlite3
-from lib.db import CONN, CURSOR
+from .db import CONN, CURSOR
+from .db_base import DBBase
 
-class Restaurant:
-
+class Restaurant(DBBase):
+    _table_name = "restaurants"
 
     def __init__(self, name, location, rest_group_id, id = None):
         self.id = id
@@ -12,7 +13,6 @@ class Restaurant:
 
     def __repr__(self):
         return f"<Restaurant id={self.id} name='{self.name}' location='{self.location}' group_id={self.rest_group_id}>"
-
 
     @property
     def name(self):
@@ -35,7 +35,6 @@ class Restaurant:
             self._location = value if value and value.strip() else None
         else:
             raise ValueError("Location must be a string or None")
-
         
     @property
     def rest_group_id(self):
@@ -50,27 +49,9 @@ class Restaurant:
         
     @classmethod
     def _from_db_row(cls, row):
-        restaurant = cls(row[1], row[2], row[3])
-        restaurant.id = (row[0])
-        return restaurant
+        return cls(id=row[0], name=row[1], location=row[2], rest_group_id=row[3])
     
-    @classmethod
-    def get_all(cls):
-        CURSOR.execute("SELECT * FROM restaurants")
-        rows = CURSOR.fetchall()
-        return [cls._from_db_row(row) for row in rows] if rows else []
-    
-    @classmethod
-    def find_by_id(cls, id):
-        CURSOR.execute("SELECT * FROM restaurants WHERE id = ?", (id,))
-        row = CURSOR.fetchone()
-        return cls._from_db_row(row) if row else None
-
-    @classmethod
-    def find_by_name(cls, name):
-        CURSOR.execute("SELECT * FROM restaurants WHERE name = ?", (name,))
-        row = CURSOR.fetchone()
-        return cls._from_db_row(row) if row else None
+    # Redundant get_all, find_by_id, find_by_name, and delete methods removed
 
     @classmethod
     def find_by_name_and_location(cls, name, location):
@@ -87,7 +68,6 @@ class Restaurant:
         row = CURSOR.fetchone()
         return cls._from_db_row(row) if row else None
         
-    
     @classmethod
     def create(cls, name, location, rest_group_id):
         existing = cls.find_exact_by_name(name, location, rest_group_id)
@@ -98,7 +78,7 @@ class Restaurant:
         return restaurant
     
     def get_related_group(self):
-        from lib.rest_group import RestGroup
+        from .rest_group import RestGroup
         rest_group_id = self._rest_group_id
         related_rest_group = RestGroup.find_by_id(rest_group_id)
         return related_rest_group
@@ -107,18 +87,14 @@ class Restaurant:
         CURSOR.execute("UPDATE restaurants SET name = ?, location = ?,rest_group_id = ? WHERE id = ?", (self._name, self._location, self._rest_group_id, self.id,))
         CONN.commit()
 
-    @classmethod
-    def delete(cls, id):
-        CURSOR.execute("DELETE FROM restaurants WHERE id = ?", (id,))
-        CONN.commit()
-
     def save(self):
         try:
-            CURSOR.execute("INSERT INTO restaurants (name, location,rest_group_id) VALUES (?,?,?)", (self.name, self.location, self.rest_group_id))
-            self.id = CURSOR.lastrowid
-            CONN.commit()
+            with CONN:
+                CURSOR.execute("INSERT INTO restaurants (name, location,rest_group_id) VALUES (?,?,?)", (self.name, self.location, self.rest_group_id))
+                self.id = CURSOR.lastrowid
         except sqlite3.IntegrityError:
             print("Unable to save this record")
+
 
 
         
