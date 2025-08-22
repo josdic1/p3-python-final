@@ -1,8 +1,9 @@
 import sqlite3
 
 CONN = sqlite3.connect('database.db')
+CONN.execute("PRAGMA foreign_keys = ON;")
 CURSOR = CONN.cursor()
-CURSOR.execute("PRAGMA foreign_keys = ON;")
+
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS rest_groups (
